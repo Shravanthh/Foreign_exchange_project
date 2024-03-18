@@ -15,14 +15,18 @@
   "bugs": {
     "url": "https://github.com/Shravanthh/Foreign_exchange_project/issues"
   },
-  "homepage": "https://github.com/Shravanthh/Foreign_exchange_project#readme",
   "devDependencies": {
+    "@aws-sdk/types": "^3.535.0",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.28",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.535.0",
+    "@aws-sdk/config-resolver": "^3.374.0",
+    "@aws-sdk/credential-provider-ini": "^3.535.0",
+    "@aws-sdk/lib-dynamodb": "^3.535.0",
     "dotenv": "^16.4.5",
     "express": "^4.18.3"
   }
