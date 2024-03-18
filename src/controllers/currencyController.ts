@@ -1,9 +1,8 @@
 import {Request, Response} from "express";
-import {scanItems} from "../services/dynamoDBService";
 import dotenv from "dotenv";
 import {UpdateCommandOutput} from "@aws-sdk/lib-dynamodb/dist-types/commands/UpdateCommand";
 import {CurrencyConversion, CurrencyModel} from "../models/currencyModel";
-import {ScanCommandInput, ScanCommandOutput} from "@aws-sdk/client-dynamodb/dist-types/commands";
+import {ScanCommandOutput} from "@aws-sdk/client-dynamodb/dist-types/commands";
 import {
     batchCreateCurrenciesEntries,
     convertCurrency,
