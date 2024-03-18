@@ -1,5 +1,4 @@
 import {Request, Response} from "express";
-import dotenv from "dotenv";
 import {UpdateCommandOutput} from "@aws-sdk/lib-dynamodb/dist-types/commands/UpdateCommand";
 import {CurrencyConversion, CurrencyModel} from "../models/currencyModel";
 import {ScanCommandOutput} from "@aws-sdk/client-dynamodb/dist-types/commands";
@@ -10,10 +9,6 @@ import {
     updateCurrencyRateEntry
 } from "../services/currencyService";
 import {GetCommandOutput} from "@aws-sdk/lib-dynamodb/dist-types/commands/GetCommand";
-
-dotenv.config()
-
-const tableName: string = process.env.CURRENCY_EXCHANGE_RATES!
 
 export const createCurrency = async (req: Request, res: Response): Promise<void> => {
     try {
