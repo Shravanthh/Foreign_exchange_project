@@ -70,3 +70,11 @@ export const getSessionDetails = async (sessionId: string): Promise<SessionDetai
         throw error;
     }
 }
+
+export const isAuthorisedRedis = async (sessionId: string) => {
+
+}
+
+export const getSessionIdRedis = async() => {
+
+}
