@@ -5,6 +5,7 @@ import {GetCommandOutput} from "@aws-sdk/lib-dynamodb/dist-types/commands/GetCom
 import { v4 as uuidV4 } from 'uuid';
 import {createUserSession} from "../utils/authentication";
 import {getCurrentEpochPlusOneDay, isExpired} from "../utils/utils";
+import {getSessionToken, setSessionToken} from "./redisService";
 
 const userTable: string = process.env.USER_TABLE!
 const sessionTable: string = process.env.SESSION_TABLE!
@@ -18,9 +19,10 @@ export const signUp = async ({signUpRequest}: {signUpRequest: SignUp}): Promise<
 export const login = async ({loginRequest}:{loginRequest:Login})=> {
     const userName: string = loginRequest.userName
     const  userData: UserData | undefined = await getUser(userName);
-    const sessionId: string = uuidV4();
     const expiresAt: number = getCurrentEpochPlusOneDay()
+    const sessionId: string = `${uuidV4()}.${expiresAt}`;
     const userSessionData = createUserSession({sessionId, expiresAt,userName})
+    await setSessionToken(sessionId, expiresAt)
     if(!userData){
         throw new Error("User not found");
     }
@@ -47,11 +49,19 @@ export const getUser = async (userName: string): Promise< UserData | undefined> 
 };
 
 export const isAuthorised = async (sessionId: string) => {
+    const sessionIdRedis: string | null | undefined = await getSessionToken(sessionId)
+    if(sessionIdRedis) {
+        console.log('sessionIdRedis', sessionIdRedis)
+        const expiresAt: number = parseInt(sessionIdRedis.slice(sessionIdRedis.lastIndexOf('.')+1))
+        if(isExpired(expiresAt)) {
+            throw new Error("session is expired")
+        }
+    }
     const sessionDetail: SessionDetails = await getSessionDetails(sessionId);
-    if(!sessionDetail){
+    if(!sessionDetail) {
         throw new Error("Failed to authenticate")
     }
-    if(isExpired(sessionDetail.expiresAt)){
+    if(isExpired(sessionDetail.expiresAt)) {
         throw new Error("session is expired")
     }
     return true

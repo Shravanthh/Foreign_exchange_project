@@ -18,7 +18,6 @@ export const loginController = async (req: Request, res: Response): Promise<void
     try {
         const loginRequest: Login = req.body;
         const sessionId: string = await login({loginRequest});
-        await setSessionToken(sessionId)
         res.cookie('sessionToken', sessionId);
         res.status(200).send({message: 'Login successful'})
     } catch (error) {
