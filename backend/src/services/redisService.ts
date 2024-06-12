@@ -14,9 +14,13 @@ const redisClient: RedisClientType = createClient({
     }
 });
 
-export const setSessionToken = async (sessionId: string, expiresAt: string)=> {
+export const setSessionToken = async (sessionId: string, expiresAt: number)=> {
     try {
-        await redisClient.connect().then(() => redisClient.set(sessionId, expiresAt))
+        if(await redisClient.connect()){
+            await redisClient.set(sessionId, expiresAt)
+        }else {
+            await redisClient.connect().then(() => redisClient.set(sessionId, expiresAt))
+        }
         console.log('Session token set successfully');
     } catch (error) {
         console.error('Error setting session token:', error);
@@ -25,7 +29,10 @@ export const setSessionToken = async (sessionId: string, expiresAt: string)=> {
 
 export const getSessionToken = async (sessionId: string): Promise<string | undefined | null> => {
     try {
-        return redisClient.connect().then(() => redisClient.get(sessionId))
+        if(await redisClient.connect()){
+        }else {
+            return await redisClient.connect().then(() => redisClient.get(sessionId))
+        }
     } catch (error) {
         console.error('Error fetching sessionId', error)
     }

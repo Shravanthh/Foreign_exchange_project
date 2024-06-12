@@ -28,7 +28,7 @@ export const loginController = async (req: Request, res: Response): Promise<void
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
     const sessionId = req.cookies['sessionToken'];
     if (!sessionId) {
-        return res.status(401).json({ message: 'Unauthorized' });
+        return res.status(401).json({ message: 'no session id found Unauthorized' });
     }
     try {
         await isAuthorised(sessionId)

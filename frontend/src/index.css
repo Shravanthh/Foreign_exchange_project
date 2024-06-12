@@ -1,0 +1,140 @@
+/* Reset styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: #222;
+    color: #ddd;
+}
+
+.limiter {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    background-image: url('images/BACKGROUND.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.container-login {
+    width: 300px;
+    padding: 40px;
+    background-color: rgba(2, 18, 43, 0.5);
+    border-radius: 1px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Login form styles */
+.wrap-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-title {
+    font-size: 24px;
+    margin-bottom: 30px;
+    color: #fff;
+}
+
+.login-form {
+    width: 100%;
+}
+
+.input-wrap {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.input {
+    width: 100%;
+    padding: 10px;
+    background-color: #1A2130;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.focus {
+    position: absolute;
+    bottom: -5px;
+    left: 10px;
+    color: #fff;
+    font-size: 16px;
+    opacity: 0;
+    transition: 0.5s ease-in-out;
+}
+
+.input:focus + .focus {
+    opacity: 1;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Login button styles */
+.container-form-btn {
+    margin-top: 30px;
+}
+
+.form-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #5A72A0;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+    position: relative;
+    z-index: 1;
+}
+
+.form-btn:hover {
+    background-color: #1A2130;
+}
+
+.create-login a {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #8d8dd6;
+    text-align: center;
+    text-decoration: none;
+}
+
+.create-login a:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(45deg)}
+    100% { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 5px solid #fff;
+    width: 18px;
+    height: 18px;
+    animation: spin 1s linear infinite;
+    position: relative;
+    top: 50%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}

@@ -21,9 +21,8 @@ export const login = async ({loginRequest}:{loginRequest:Login})=> {
     const  userData: UserData | undefined = await getUser(userName);
     const expiresAt: number = getCurrentEpochPlusOneDay()
     const sessionId: string = `${uuidV4()}.${expiresAt}`;
-    const userSessionData = createUserSession({sessionId, expiresAt,userName})
-    await setSessionToken(sessionId, expiresAt)
-    if(!userData){
+    const userSessionData = createUserSession({sessionId, expiresAt, userName})
+    if(!userData) {
         throw new Error("User not found");
     }
     const passwordValid = checkPassword({password: loginRequest.password, hashPassword: userData.password})
@@ -31,6 +30,7 @@ export const login = async ({loginRequest}:{loginRequest:Login})=> {
         throw new Error("Invalid password");
     }
     await putItem({TableName:sessionTable, Item: userSessionData})
+    await setSessionToken(sessionId, expiresAt)
     return sessionId;
 }
 
@@ -56,6 +56,7 @@ export const isAuthorised = async (sessionId: string) => {
         if(isExpired(expiresAt)) {
             throw new Error("session is expired")
         }
+        return true
     }
     const sessionDetail: SessionDetails = await getSessionDetails(sessionId);
     if(!sessionDetail) {

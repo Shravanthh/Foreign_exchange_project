@@ -14,6 +14,6 @@ router.patch('/:currencyCode/rate', updateCurrencyRate);
 router.get('/', getAllCurrency)
 router.get('/:currencyCode', getCurrency)
 router.post('/batch', batchCreateCurrencies)
-router.post('/currencies/conversions', currencyConversion)
+router.post('/conversions', currencyConversion)
 
 export default router
