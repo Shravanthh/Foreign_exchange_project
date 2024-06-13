@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, {useEffect, useState} from 'react';
 import '../../index.css';
+import {
+    createNewCurrencyApi,
+    currencyConversionApi,
+    fetchCurrenciesApi,
+    updateCurrenciesApi
+} from "../../api/currencies";
 
 const Dashboard = () => {
     const [currencies, setCurrencies] = useState([]);
@@ -23,6 +28,8 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [result, setResult] = useState(null);
+    const [isNewCurrencyPopupVisible, setIsNewCurrencyPopupVisible] = useState(false);
+    const [isUpdateCurrencyPopupVisible, setIsUpdateCurrencyPopupVisible] = useState(false);
 
     useEffect(() => {
         fetchCurrencies();
@@ -30,9 +37,7 @@ const Dashboard = () => {
 
     const fetchCurrencies = async () => {
         try {
-            const response = await axios.get('http://localhost:80/currencies', {
-                withCredentials: true
-            });
+            const response = await fetchCurrenciesApi();
             setCurrencies(response.data);
         } catch (error) {
             console.error('Error fetching currencies:', error);
@@ -53,11 +58,10 @@ const Dashboard = () => {
 
     const handleConversionSubmit = async (e) => {
         e.preventDefault();
+        setError('')
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:80/currencies/conversions', conversionData, {
-                withCredentials: true
-            });
+            const response = await currencyConversionApi(conversionData);
             setResult(response.data);
             setLoading(false);
         } catch (error) {
@@ -68,25 +72,29 @@ const Dashboard = () => {
 
     const handleNewCurrencySubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
-            await axios.post('http://localhost:80/currencies', newCurrency, {
-                withCredentials: true
-            });
-            fetchCurrencies();
+            await createNewCurrencyApi(newCurrency);
+            await fetchCurrencies();
+            setLoading(false);
+            setIsNewCurrencyPopupVisible(false);
         } catch (error) {
             console.error('Error adding new currency:', error);
+            setLoading(false);
         }
     };
 
     const handleUpdateCurrencySubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
-            await axios.put(`http://localhost:80/currencies/${updateCurrency.currencyCode}/rate`,
-                { rateAgainstUSD: updateCurrency.rateAgainstUSD },
-                { withCredentials: true });
-            fetchCurrencies();
+            await updateCurrenciesApi(updateCurrency);
+            await fetchCurrencies();
+            setLoading(false);
+            setIsUpdateCurrencyPopupVisible(false);
         } catch (error) {
             console.error('Error updating currency rate:', error);
+            setLoading(false);
         }
     };
 
@@ -122,73 +130,89 @@ const Dashboard = () => {
                         {loading ? <div className="loading-spinner"></div> : 'Convert'}
                     </button>
                 </form>
-                {result && <div>Conversion Result: {result.conversionResult}</div>}
+                {result && <div>Conversion Result: {result.conversionRate}</div>}
                 {error && <div className="error">{error}</div>}
             </div>
 
-            {/* Add New Currency Form */}
-            <div className="new-currency-form">
-                <h2>Add New Currency</h2>
-                <form onSubmit={handleNewCurrencySubmit}>
-                    <input
-                        type="text"
-                        name="currencyCode"
-                        placeholder="Currency Code"
-                        value={newCurrency.currencyCode}
-                        onChange={handleNewCurrencyChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="currencySymbol"
-                        placeholder="Currency Symbol"
-                        value={newCurrency.currencySymbol}
-                        onChange={handleNewCurrencyChange}
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="displayName"
-                        placeholder="Display Name"
-                        value={newCurrency.displayName}
-                        onChange={handleNewCurrencyChange}
-                        required
-                    />
-                    <input
-                        type="number"
-                        name="rateAgainstUSD"
-                        placeholder="Rate Against USD"
-                        value={newCurrency.rateAgainstUSD}
-                        onChange={handleNewCurrencyChange}
-                        step="0.0001"
-                        required
-                    />
-                    <button type="submit">Add Currency</button>
-                </form>
+            {/* Buttons to show popups */}
+            <div className="action-buttons">
+                <button onClick={() => setIsNewCurrencyPopupVisible(true)}>Add New Currency</button>
+                <button onClick={() => setIsUpdateCurrencyPopupVisible(true)}>Update Currency Rate</button>
             </div>
 
-            {/* Update Currency Rate Form */}
-            <div className="update-currency-form">
-                <h2>Update Currency Rate</h2>
-                <form onSubmit={handleUpdateCurrencySubmit}>
-                    <select name="currencyCode" value={updateCurrency.currencyCode} onChange={handleUpdateCurrencyChange} required>
-                        <option value="" disabled>Select currency</option>
-                        {currencies.map(currency => (
-                            <option key={currency.currencyCode} value={currency.currencyCode}>{currency.displayName}</option>
-                        ))}
-                    </select>
-                    <input
-                        type="number"
-                        name="rateAgainstUSD"
-                        placeholder="New Rate Against USD"
-                        value={updateCurrency.rateAgainstUSD}
-                        onChange={handleUpdateCurrencyChange}
-                        step="0.0001"
-                        required
-                    />
-                    <button type="submit">Update Rate</button>
-                </form>
-            </div>
+            {/* Add New Currency Popup */}
+            {isNewCurrencyPopupVisible && (
+                <div className="popup">
+                    <div className="popup-inner">
+                        <h2>Add New Currency</h2>
+                        <form onSubmit={handleNewCurrencySubmit}>
+                            <input
+                                type="text"
+                                name="currencyCode"
+                                placeholder="Currency Code"
+                                value={newCurrency.currencyCode}
+                                onChange={handleNewCurrencyChange}
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="currencySymbol"
+                                placeholder="Currency Symbol"
+                                value={newCurrency.currencySymbol}
+                                onChange={handleNewCurrencyChange}
+                                required
+                            />
+                            <input
+                                type="text"
+                                name="displayName"
+                                placeholder="Display Name"
+                                value={newCurrency.displayName}
+                                onChange={handleNewCurrencyChange}
+                                required
+                            />
+                            <input
+                                type="number"
+                                name="rateAgainstUSD"
+                                placeholder="Rate Against USD"
+                                value={newCurrency.rateAgainstUSD}
+                                onChange={handleNewCurrencyChange}
+                                step="0.0001"
+                                required
+                            />
+                            <button type="submit">{loading ? <div className="loading-spinner"></div> : 'Add Currency'}</button>
+                            <button type="button" onClick={() => setIsNewCurrencyPopupVisible(false)}>Close</button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Update Currency Rate Popup */}
+            {isUpdateCurrencyPopupVisible && (
+                <div className="popup">
+                    <div className="popup-inner">
+                        <h2>Update Currency Rate</h2>
+                        <form onSubmit={handleUpdateCurrencySubmit}>
+                            <select name="currencyCode" value={updateCurrency.currencyCode} onChange={handleUpdateCurrencyChange} required>
+                                <option value="" disabled>Select currency</option>
+                                {currencies.map(currency => (
+                                    <option key={currency.currencyCode} value={currency.currencyCode}>{currency.displayName}</option>
+                                ))}
+                            </select>
+                            <input
+                                type="number"
+                                name="rateAgainstUSD"
+                                placeholder="New Rate Against USD"
+                                value={updateCurrency.rateAgainstUSD}
+                                onChange={handleUpdateCurrencyChange}
+                                step="0.0001"
+                                required
+                            />
+                            <button type="submit">{loading ? <div className="loading-spinner"></div> : 'Update Rate'}</button>
+                            <button type="button" onClick={() => setIsUpdateCurrencyPopupVisible(false)}>Close</button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

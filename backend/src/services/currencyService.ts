@@ -7,14 +7,14 @@ import {ScanCommandInput, ScanCommandOutput} from "@aws-sdk/client-dynamodb/dist
 
 dotenv.config()
 const tableName: string = process.env.CURRENCY_EXCHANGE_RATES!
-export const getCurrencyEntries = async (currencyCode: string):Promise<GetCommandOutput> => {
+export const getCurrencyEntries = async (currencyCode: string):Promise<CurrencyModel> => {
     const params = {
         TableName: tableName,
         Key: { currencyCode },
     };
 
     try {
-        return await getItem(params);
+        return await getItem(params).then(data => data.Item as CurrencyModel);
     } catch (error) {
         console.error("Failed to get currency data:", error);
         throw error;
@@ -28,18 +28,18 @@ export const getAllCurrencyEntries = async(): Promise<ScanCommandOutput> => {
     return await scanItems(params);
 }
 
-export const convertCurrency = async (sourceCurrencyCode: string, destinationCurrencyCode: string, conversionQuantity: number): Promise<string> => {
+export const convertCurrency = async (sourceCurrencyCode: string, destinationCurrencyCode: string, conversionQuantity: number): Promise<object> => {
     try {
-        const {Item: sourceData} = await getCurrencyEntries(sourceCurrencyCode);
-        const {Item: destinationData} = await getCurrencyEntries(destinationCurrencyCode);
+        const sourceData: CurrencyModel = await getCurrencyEntries(sourceCurrencyCode);
+        const destinationData: CurrencyModel = await getCurrencyEntries(destinationCurrencyCode);
 
         if (!sourceData || !destinationData) {
             throw new Error("Currency data not found");
         }
-        const latestDate = new Date(destinationData.lastUpdatedAt)
+        const latestDate = destinationData.lastUpdatedAt
         const amountInUSD = conversionQuantity / sourceData.rateAgainstUSD;
-        const conversionRate = amountInUSD * destinationData.rateAgainstUSD;
-        return `${conversionQuantity} ${sourceData.displayName} is equal to ${conversionRate.toFixed(2)} ${destinationData.displayName} as of ${latestDate}`;
+        const conversionRate = (amountInUSD * destinationData.rateAgainstUSD).toFixed(2);
+        return {conversionQuantity, sourceData, destinationData, conversionRate, latestDate}
     } catch (error) {
         console.error("Currency conversion failed:", error);
         throw error;

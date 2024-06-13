@@ -39,7 +39,6 @@ const Signup = () => {
 
                         <div className="input-wrap" data-validate="Enter username">
                             <input
-                                className="input"
                                 type="text"
                                 name="userName"
                                 placeholder="User name"
@@ -52,7 +51,6 @@ const Signup = () => {
 
                         <div className="input-wrap" data-validate="Enter Name">
                             <input
-                                className="input"
                                 type="text"
                                 name="name"
                                 placeholder="Name"
@@ -65,7 +63,6 @@ const Signup = () => {
 
                         <div className="input-wrap" data-validate="Enter password">
                             <input
-                                className="input"
                                 type="password"
                                 name="password"
                                 placeholder="Password"
@@ -79,7 +76,7 @@ const Signup = () => {
                         {error && <p className="error">{error}</p>}
 
                         <div className="container-form-btn">
-                            <button className="form-btn" type="submit">
+                            <button type="submit">
                                 {isLoading ? <div className='loading-spinner'></div> : 'Create Account'}
                             </button>
                         </div>

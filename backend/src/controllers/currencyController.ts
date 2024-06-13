@@ -54,8 +54,8 @@ export const getAllCurrency = async (req:Request, res:Response):Promise<void> =>
 export const getCurrency = async (req:Request, res:Response):Promise<void> => {
     try {
         const {currencyCode} = req.params
-        const data: GetCommandOutput = await getCurrencyEntries(currencyCode)
-        res.status(200).send(data.Item);
+        const data = await getCurrencyEntries(currencyCode)
+        res.status(200).send(data);
     } catch (err) {
         res.status(500).send(err);
     }

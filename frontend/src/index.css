@@ -1,4 +1,4 @@
-/* Reset styles */
+/* Reset Styles */
 * {
     margin: 0;
     padding: 0;
@@ -7,23 +7,20 @@
 
 body {
     font-family: sans-serif;
-    background-color: #222;
-    color: #ddd;
-}
-
-.limiter {
-    width: 100%;
-    height: 100vh;
-    position: relative;
     background-image: url('images/BACKGROUND.jpg');
     background-size: cover;
     background-position: center;
+    color: #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .container-login {
     width: 300px;
     padding: 40px;
-    background-color: rgba(2, 18, 43, 0.5);
+    background-color: #333;
     border-radius: 1px;
     position: absolute;
     top: 50%;
@@ -31,7 +28,7 @@ body {
     transform: translate(-50%, -50%);
 }
 
-/* Login form styles */
+/* Login Form Styles */
 .wrap-login {
     display: flex;
     flex-direction: column;
@@ -53,30 +50,6 @@ body {
     position: relative;
 }
 
-.input {
-    width: 100%;
-    padding: 10px;
-    background-color: #1A2130;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 16px;
-}
-
-.focus {
-    position: absolute;
-    bottom: -5px;
-    left: 10px;
-    color: #fff;
-    font-size: 16px;
-    opacity: 0;
-    transition: 0.5s ease-in-out;
-}
-
-.input:focus + .focus {
-    opacity: 1;
-}
-
 .error {
     color: red;
     font-size: 14px;
@@ -84,7 +57,7 @@ body {
     text-align: center;
 }
 
-/* Login button styles */
+/* Login Button Styles */
 .container-form-btn {
     margin-top: 30px;
 }
@@ -116,12 +89,13 @@ body {
 }
 
 .create-login a:hover {
-    text-decoration: underline; /* Add underline on hover */
+    text-decoration: underline;
 }
 
+/* Loading Spinner */
 @keyframes spin {
     0% { transform: rotate(0deg); }
-    50% { transform: rotate(45deg)}
+    50% { transform: rotate(45deg); }
     100% { transform: rotate(360deg); }
 }
 
@@ -133,8 +107,75 @@ body {
     height: 18px;
     animation: spin 1s linear infinite;
     position: relative;
-    top: 50%;
-    left: 45%;
+    align-content: center;
     transform: translate(-50%, -50%);
     z-index: 0;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    margin: auto;
+}
+
+.conversion-form,
+.new-currency-form,
+.update-currency-form,
+.action-buttons {
+    margin-bottom: 20px;
+}
+
+/* Popup Styles */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-inner {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Form Elements */
+select, input {
+    display: block;
+    width: calc(100% - 20px);
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #444;
+    color: #ddd;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5A72A0;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+}
+
+button:hover {
+    background-color: #1A2130;
 }
