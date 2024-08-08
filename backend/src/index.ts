@@ -11,19 +11,19 @@ import path from "path";
 dotenv.config()
 
 const app:Express = express();
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(cors({ origin: ['http://localhost:3000', 'http://shravanth.evivelabs.com'], credentials: true}));
+app.use(cors({ origin: ['http://localhost:3000', 'http://shravanth.evivelabs.com', 'http://shravanth.evivelabs.com/authentication'], credentials: true}));
 
-app.use(express.static(path.join(__dirname, '../../frontend/build/')));
+app.use(express.static(path.join(__dirname, '../build/')));
 
 app.use('/authentication', authenticationRoutes)
 app.use('/currencies', isAuthenticated, currencyRoutes)
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../frontend/build/', 'index.html'));
+    res.sendFile(path.join(__dirname, '../build/', 'index.html'));
 });
 
 app.listen(port, () => {

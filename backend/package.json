@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "start": "webpack --watch"
+    "build": "tsc",
+    "start": "node target/index.js"
   },
   "repository": {
     "type": "git",
